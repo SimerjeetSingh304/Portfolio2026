@@ -1,8 +1,8 @@
-import Hero from "./Hero.jsx";
-import Skills from "./Skills.jsx";
-import Education from "./Education.jsx";
-import HomeProjects from "./HomeProjects.jsx";
-import Contact from "./Contact.jsx";
+import Hero from "../sections/Hero.jsx";
+import Skills from "../sections/Skills.jsx";
+import Education from "../sections/Education.jsx";
+import HomeProjects from "../sections/HomeProjects.jsx";
+import Contact from "../sections/Contact.jsx";
 
 export default function HomePage({ darkMode }) {
   return (

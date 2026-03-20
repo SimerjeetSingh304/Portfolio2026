@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import Navbar from "./components/Navbar.jsx";
-import HomePage from "./components/HomePage.jsx";
-import Projects from "./components/Projects.jsx";
+import Navbar from "./components/layout/Navbar.jsx";
+import HomePage from "./components/layout/HomePage.jsx";
+import Projects from "./components/sections/Projects.jsx";
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(true);

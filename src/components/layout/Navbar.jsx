@@ -3,7 +3,7 @@ import { Link as ScrollLink } from "react-scroll";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { FiMenu, FiX, FiSun, FiMoon } from "react-icons/fi";
 
-const PORTFOLIO_LOGO = "YourName />";
+const PORTFOLIO_LOGO = "Simerjeet Singh";
 
 const navLinks = [
   { label: "Home", to: "hero", type: "scroll" },

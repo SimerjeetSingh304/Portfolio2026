@@ -2,8 +2,10 @@ import { TypeAnimation } from "react-type-animation";
 import { motion } from "framer-motion";
 import { FiDownload, FiGithub } from "react-icons/fi";
 
+import profilePhoto from "../../assets/Gemini_Generated_Image_ufqljnufqljnufql (1).jpg";
+
 // TODO: Replace with your actual name
-const YOUR_NAME = "Narottam"; // Reference name
+const YOUR_NAME = "Simerjeet Singh"; // Reference name
 
 // TODO: Replace with your actual roles
 const ROLES = [
@@ -24,7 +26,7 @@ const GITHUB_URL = "https://github.com/yourusername";
 const CV_URL = "/your-cv.pdf";
 
 // TODO: Replace with your actual profile photo URL
-const PROFILE_PHOTO = null;
+const PROFILE_PHOTO = profilePhoto;
 
 export default function Hero({ darkMode }) {
   return (
