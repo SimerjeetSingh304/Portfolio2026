@@ -233,6 +233,7 @@ import { SiReact, SiNextdotjs, SiTailwindcss, SiNodedotjs, SiPython } from "reac
 import projects from "../../data/projects.js";
 
 export default function Projects({ darkMode }) {
+  const isDark = !!darkMode;
   const containerRef = useRef(null);
   const [activeProject, setActiveProject] = useState(0);
   const { scrollYProgress } = useScroll({
@@ -297,11 +298,12 @@ export default function Projects({ darkMode }) {
   };
 
   return (
-    <div ref={containerRef} className="relative h-[500vh] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div 
+      ref={containerRef} 
+      className={`relative h-[500vh] ${isDark ? "bg-transparent" : "bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100"}`}
+    >
       {/* Animated Background Grid */}
-      <div className="fixed inset-0 opacity-20">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:40px_40px]" />
-      </div>
+      {/* Animated Background Grid removed for standardization */}
 
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         

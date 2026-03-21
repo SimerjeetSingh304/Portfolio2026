@@ -50,7 +50,7 @@ export default function Contact({ darkMode }) {
   });
 
   return (
-    <section style={{
+    <section id="contact" style={{
       minHeight: "100vh",
       background: sectionBg,
       display: "flex",

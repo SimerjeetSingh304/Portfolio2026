@@ -1,153 +1,396 @@
 import { TypeAnimation } from "react-type-animation";
 import { motion } from "framer-motion";
-import { FiDownload, FiGithub } from "react-icons/fi";
-
+import { FiDownload, FiGithub, FiArrowDownRight } from "react-icons/fi";
 import profilePhoto from "../../assets/Gemini_Generated_Image_ufqljnufqljnufql (1).jpg";
 
-// TODO: Replace with your actual name
-const YOUR_NAME = "Simerjeet Singh"; // Reference name
-
-// TODO: Replace with your actual roles
-const ROLES = [
-  "Web Developer",
-  1000,
-  "Coder",
-  1000,
-  "Programmer",
-  1000,
-  "Problem Solver",
-  1000,
-];
-
-// TODO: Replace with your GitHub profile URL
+const YOUR_NAME_LINE1 = "Simerjeet";
+const YOUR_NAME_LINE2 = "Singh";
 const GITHUB_URL = "https://github.com/yourusername";
-
-// TODO: Replace with the path to your actual CV file (put it in /public folder)
 const CV_URL = "/your-cv.pdf";
 
-// TODO: Replace with your actual profile photo URL
-const PROFILE_PHOTO = profilePhoto;
+const ROLES = [
+  "Full-Stack Developer", 1500,
+  "ML Engineer", 1500,
+  "Community Builder", 1500,
+  "Problem Solver", 1500,
+];
+
+const STATS = [
+  { value: "15K+", label: "Community" },
+  { value: "50+",  label: "Events led" },
+  { value: "3+",   label: "Years coding" },
+];
+
+const up = (delay = 0) => ({
+  initial: { opacity: 0, y: 22 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
+});
+
+const fadeOnly = (delay = 0) => ({
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: { duration: 0.6, delay },
+});
 
 export default function Hero({ darkMode }) {
+  const isDark = !!darkMode;
+
+  const text1   = isDark ? "#f8fafc" : "#0f172a";
+  const text2   = isDark ? "#94a3b8" : "#64748b";
+  const textMid = isDark ? "#cbd5e1" : "#334155";
+  const border  = isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.10)";
+  const pageBg  = isDark ? "#050507" : "#f4f6f9";
+
   return (
     <section
       id="hero"
-      className="min-h-screen flex items-center justify-center px-6 md:px-12 pt-16 overflow-hidden"
+      style={{
+        position: "relative",
+        height: "100svh",
+        display: "flex",
+        alignItems: "center",
+        overflow: "hidden",
+        background: "transparent",
+      }}
     >
-      <div className="max-w-7xl w-full mx-auto flex flex-col md:flex-row items-center justify-between gap-16">
-        {/* Left: Content - Matching narottam.vercel.app alignment */}
-        <motion.div
-          initial={{ opacity: 0, x: -60 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex-1 text-center md:text-left z-10"
-        >
-          <div className="mb-6">
-            <h2 className="text-[#4F8EF7] font-bold text-xl md:text-2xl mb-2">
-              नमस्ते! I am
-            </h2>
-            <h1
-              className={`text-5xl md:text-8xl font-black mb-6 tracking-tight ${darkMode ? "text-white" : "text-slate-900"
-                }`}
-            >
-              {YOUR_NAME}
-            </h1>
+      {/* Ambient glows */}
+      <div style={{
+        position:"absolute",top:"-18%",right:"-12%",zIndex:0,
+        width:680,height:680,borderRadius:"50%",pointerEvents:"none",
+        background:"radial-gradient(circle,rgba(59,130,246,0.10) 0%,transparent 68%)",
+      }}/>
+      <div style={{
+        position:"absolute",bottom:"-22%",left:"-10%",zIndex:0,
+        width:520,height:520,borderRadius:"50%",pointerEvents:"none",
+        background:"radial-gradient(circle,rgba(99,102,241,0.07) 0%,transparent 65%)",
+      }}/>
 
-            <div className="text-2xl md:text-4xl font-bold h-12">
-              <span className={darkMode ? "text-slate-400" : "text-slate-600"}>
-                I&apos;m a{" "}
+      {/* Dot grid */}
+      {/* Subtle dot grid removed for standardization */}
+
+      {/* Layout grid */}
+      <div
+        className="hero-grid"
+        style={{
+          position:"relative",zIndex:1,
+          maxWidth:1280,width:"100%",margin:"0 auto",
+          padding:"8rem 2rem 5rem",
+          display:"grid",
+          gridTemplateColumns:"1fr auto",
+          alignItems:"center",
+          gap:"5rem",
+        }}
+      >
+
+        {/* ── LEFT ── */}
+        <div>
+
+          {/* Availability pill */}
+          <motion.div {...fadeOnly(0.1)} style={{marginBottom:"2.75rem"}}>
+            <span style={{
+              display:"inline-flex",alignItems:"center",gap:"0.55rem",
+              padding:"0.35rem 1rem 0.35rem 0.7rem",
+              borderRadius:50,
+              border:`1px solid ${isDark?"rgba(59,130,246,0.28)":"rgba(59,130,246,0.22)"}`,
+              background:isDark?"rgba(59,130,246,0.06)":"rgba(59,130,246,0.05)",
+              fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.05em",
+              color:"#3b82f6",
+            }}>
+              <span style={{
+                width:7,height:7,borderRadius:"50%",
+                background:"#22c55e",
+                boxShadow:"0 0 0 3px rgba(34,197,94,0.2)",
+                display:"inline-block",
+                animation:"hpulse 2.4s ease infinite",
+              }}/>
+              Available for opportunities
+            </span>
+          </motion.div>
+
+          {/* Greeting */}
+          <motion.p {...up(0.18)} style={{
+            fontFamily:"monospace",fontSize:"0.95rem",
+            letterSpacing:"0.1em",color:"#3b82f6",
+            marginBottom:"0.75rem",fontWeight:600,
+          }}>
+            नमस्ते! I'm
+          </motion.p>
+
+          {/* Name */}
+          <div style={{marginBottom:"1.75rem",lineHeight:0.9}}>
+            <motion.div
+              initial={{opacity:0,x:-36}}
+              animate={{opacity:1,x:0}}
+              transition={{duration:0.8,delay:0.22,ease:[0.22,1,0.36,1]}}
+            >
+              <span style={{
+                display:"block",
+                fontSize:"clamp(3rem,8.5vw,7.2rem)",
+                fontWeight:900,letterSpacing:"-0.045em",color:text1,
+              }}>
+                {YOUR_NAME_LINE1}
               </span>
-              <TypeAnimation
-                sequence={ROLES}
-                wrapper="span"
-                speed={50}
-                repeat={Infinity}
-                className="gradient-text"
-              />
+            </motion.div>
+            <motion.div
+              initial={{opacity:0,x:-36}}
+              animate={{opacity:1,x:0}}
+              transition={{duration:0.8,delay:0.30,ease:[0.22,1,0.36,1]}}
+            >
+              <span style={{
+                display:"block",
+                fontSize:"clamp(3rem,8.5vw,7.2rem)",
+                fontWeight:900,letterSpacing:"-0.045em",
+                color:"transparent",
+                WebkitTextStroke:`2.5px ${isDark?"rgba(255,255,255,0.45)":"rgba(15,23,42,0.35)"}`,
+              }}>
+                {YOUR_NAME_LINE2}
+              </span>
+            </motion.div>
+          </div>
+
+          {/* Role */}
+          <motion.div {...up(0.42)} style={{
+            display:"flex",alignItems:"center",flexWrap:"wrap",
+            gap:"0.45rem",marginBottom:"1.75rem",minHeight:"2.4rem",
+          }}>
+            <span style={{fontSize:"clamp(1rem,2.6vw,1.4rem)",fontWeight:300,color:text2}}>
+              I build
+            </span>
+            <TypeAnimation
+              sequence={ROLES}
+              wrapper="span"
+              speed={54}
+              repeat={Infinity}
+              style={{
+                fontSize:"clamp(1rem,2.6vw,1.4rem)",
+                fontWeight:700,letterSpacing:"-0.02em",
+                background:"linear-gradient(130deg,#3b82f6 0%,#818cf8 100%)",
+                WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
+              }}
+            />
+          </motion.div>
+
+          {/* Bio */}
+          <motion.p {...up(0.52)} style={{
+            fontSize:"1rem",lineHeight:1.8,fontWeight:300,
+            color:text2,maxWidth:460,marginBottom:"2.75rem",
+          }}>
+            CS student at MSIT · Founder of{" "}
+            <span style={{color:textMid,fontWeight:600}}>Geek Room</span>
+            {" "}· GDG Lead. I craft full-stack applications and AI systems — and love the craft of building things that matter.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div {...up(0.62)} style={{
+            display:"flex",flexWrap:"wrap",
+            gap:"0.875rem",alignItems:"center",marginBottom:"3.5rem",
+          }}>
+            <a href={CV_URL} download style={{
+              display:"inline-flex",alignItems:"center",gap:"0.5rem",
+              padding:"0.82rem 1.9rem",borderRadius:50,
+              background:"linear-gradient(130deg,#3b82f6,#6366f1)",
+              color:"#fff",fontSize:"0.84rem",fontWeight:700,letterSpacing:"0.02em",
+              textDecoration:"none",
+              boxShadow:"0 6px 28px rgba(59,130,246,0.3)",
+              transition:"transform 0.2s,box-shadow 0.2s",
+            }}
+              onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 10px 36px rgba(59,130,246,0.46)";}}
+              onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow="0 6px 28px rgba(59,130,246,0.3)";}}
+            >
+              <FiDownload size={15}/> Download CV
+            </a>
+
+            <a href={GITHUB_URL} target="_blank" rel="noreferrer" style={{
+              display:"inline-flex",alignItems:"center",gap:"0.5rem",
+              padding:"0.82rem 1.9rem",borderRadius:50,
+              border:`1.5px solid ${border}`,color:textMid,
+              fontSize:"0.84rem",fontWeight:700,letterSpacing:"0.02em",
+              textDecoration:"none",background:"transparent",
+              transition:"border-color 0.2s,color 0.2s,background 0.2s",
+            }}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(59,130,246,0.45)";e.currentTarget.style.color="#3b82f6";e.currentTarget.style.background="rgba(59,130,246,0.05)";}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor=border;e.currentTarget.style.color=textMid;e.currentTarget.style.background="transparent";}}
+            >
+              <FiGithub size={15}/> GitHub
+            </a>
+
+
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div {...fadeOnly(0.85)} style={{
+            display:"flex",alignItems:"center",gap:"2.25rem",
+            paddingTop:"2.25rem",
+            borderTop:`1px solid ${border}`,
+          }}>
+            {STATS.map((s,i)=>(
+              <div key={i}>
+                <div style={{
+                  fontSize:"1.6rem",fontWeight:900,letterSpacing:"-0.03em",lineHeight:1,
+                  background:"linear-gradient(130deg,#3b82f6,#818cf8)",
+                  WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
+                }}>
+                  {s.value}
+                </div>
+                <div style={{
+                  fontSize:"0.68rem",fontWeight:600,letterSpacing:"0.09em",
+                  textTransform:"uppercase",color:text2,marginTop:"0.25rem",
+                }}>
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* ── RIGHT – Photo ── */}
+        <motion.div
+          className="hero-photo-wrap"
+          initial={{opacity:0,scale:0.88}}
+          animate={{opacity:1,scale:1}}
+          transition={{duration:1.0,delay:0.15,ease:[0.22,1,0.36,1]}}
+          style={{
+            position:"relative",
+            width:"clamp(260px,28vw,390px)",
+            height:"clamp(260px,28vw,390px)",
+            flexShrink:0,
+          }}
+        >
+          {/* Outer orbit ring */}
+          <div style={{
+            position:"absolute",inset:"-13%",borderRadius:"50%",
+            border:`1px solid ${isDark?"rgba(59,130,246,0.14)":"rgba(59,130,246,0.11)"}`,
+            animation:"orbit 20s linear infinite",pointerEvents:"none",
+          }}>
+            <div style={{
+              position:"absolute",top:"7%",left:"50%",
+              width:8,height:8,borderRadius:"50%",
+              background:"#3b82f6",boxShadow:"0 0 10px rgba(59,130,246,0.8)",
+              transform:"translate(-50%,-50%)",
+            }}/>
+          </div>
+
+          {/* Dashed inner ring */}
+          <div style={{
+            position:"absolute",inset:"-4%",borderRadius:"50%",
+            border:`1px dashed ${isDark?"rgba(255,255,255,0.05)":"rgba(15,23,42,0.07)"}`,
+            animation:"orbit 34s linear infinite reverse",pointerEvents:"none",
+          }}/>
+
+          {/* Photo */}
+          <div style={{
+            width:"100%",height:"100%",borderRadius:"50%",padding:3,
+            background:"linear-gradient(140deg,#3b82f6 0%,#818cf8 55%,#f59e0b 100%)",
+            boxShadow:isDark
+              ?"0 0 72px rgba(59,130,246,0.22),0 0 32px rgba(99,102,241,0.14)"
+              :"0 20px 72px rgba(59,130,246,0.18),0 8px 28px rgba(15,23,42,0.08)",
+          }}>
+            <div style={{
+              width:"100%",height:"100%",borderRadius:"50%",overflow:"hidden",
+              border:`4px solid ${isDark?"#050507":"#ffffff"}`,
+              background:isDark?"#0f172a":"#e2e8f0",
+            }}>
+              <img src={profilePhoto} alt="Simerjeet Singh"
+                style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
             </div>
           </div>
 
-          <p className={`text-lg mb-10 max-w-lg leading-relaxed ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
-            I am a full-stack developer with a passion for building high-quality web applications
-            and solving complex problems through efficient code.
-          </p>
-
-          <div className="flex flex-wrap gap-5 justify-center md:justify-start">
-            {/* CTA Button 1 - Solid Blue (Primary) */}
-            <a
-              href={CV_URL}
-              download
-              className="px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-[#4F8EF7]/40 flex items-center gap-2"
-              style={{ background: "#4F8EF7" }}
-            >
-              <FiDownload size={18} />
-              Download CV
-            </a>
-
-            {/* CTA Button 2 - Semi-transparent (Secondary) */}
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noreferrer"
-              className={`px-8 py-4 rounded-full font-bold text-base border-2 transition-all duration-300 hover:scale-105 flex items-center gap-2 ${darkMode
-                  ? "border-[#4F8EF7] text-white hover:bg-[#4F8EF7]/10"
-                  : "border-slate-300 text-slate-800 hover:border-[#4F8EF7] hover:text-[#4F8EF7]"
-                }`}
-            >
-              <FiGithub size={18} />
-              GitHub
-            </a>
-          </div>
-        </motion.div>
-
-        {/* Right: Profile Image - Matching narottam.vercel.app profile look */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: "circOut" }}
-          className="flex-shrink-0 relative"
-        >
-          {/* Decorative rings behind image */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-glow opacity-30 animate-pulse" />
-
-          <div
-            className="relative w-64 h-64 md:w-96 md:h-96 rounded-full p-2"
+          {/* Badge bottom-right */}
+          <motion.div
+            initial={{opacity:0,y:10,scale:0.7}}
+            animate={{opacity:1,y:0,scale:1}}
+            transition={{delay:0.9,duration:0.55,ease:[0.22,1,0.36,1]}}
             style={{
-              background: "linear-gradient(135deg, #4F8EF7, #fde047)",
-              boxShadow: "0 0 60px rgba(79, 142, 247, 0.4)",
+              position:"absolute",bottom:"4%",right:"-6%",
+              padding:"0.6rem 1rem",borderRadius:14,
+              background:isDark?"rgba(8,8,12,0.92)":"rgba(255,255,255,0.96)",
+              border:`1px solid ${border}`,
+              boxShadow:"0 8px 28px rgba(0,0,0,0.18)",
+              backdropFilter:"blur(14px)",
+              display:"flex",alignItems:"center",gap:"0.5rem",whiteSpace:"nowrap",
             }}
           >
-            <div className="w-full h-full rounded-full overflow-hidden bg-slate-800 border-4 border-black/10">
-              {PROFILE_PHOTO ? (
-                <img
-                  src={PROFILE_PHOTO}
-                  alt={YOUR_NAME}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 border-inner shadow-inner">
-                  <svg
-                    className={`w-36 h-36 ${darkMode ? "text-slate-700" : "text-white/20"}`}
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-                  </svg>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-2 px-6 text-center">
-                    Your Profile Image
-                  </p>
-                </div>
-              )}
+            <span style={{fontSize:"1.05rem"}}>👨‍💻</span>
+            <div>
+              <div style={{fontSize:"0.7rem",fontWeight:800,color:text1}}>Full-Stack · AI</div>
+              <div style={{fontSize:"0.62rem",color:text2,fontWeight:500}}>MSIT · GDG Lead</div>
             </div>
+          </motion.div>
 
-            {/* Floating badge effect like reference site */}
-            <div className={`absolute -bottom-4 right-8 px-4 py-2 rounded-2xl border shadow-2xl font-bold text-xs ${darkMode ? "bg-black border-white/10 text-[#4F8EF7]" : "bg-white border-black/5 text-[#4F8EF7]"
-              }`}>
-              Code 👨‍💻
-            </div>
-          </div>
+          {/* Badge top-left */}
+          <motion.div
+            initial={{opacity:0,y:-10,scale:0.7}}
+            animate={{opacity:1,y:0,scale:1}}
+            transition={{delay:1.05,duration:0.55,ease:[0.22,1,0.36,1]}}
+            style={{
+              position:"absolute",top:"6%",left:"-14%",
+              padding:"0.5rem 0.9rem",borderRadius:12,
+              background:isDark?"rgba(8,8,12,0.92)":"rgba(255,255,255,0.96)",
+              border:`1px solid ${isDark?"rgba(59,130,246,0.22)":"rgba(59,130,246,0.18)"}`,
+              boxShadow:"0 4px 18px rgba(59,130,246,0.14)",
+              backdropFilter:"blur(14px)",
+              display:"flex",alignItems:"center",gap:"0.45rem",whiteSpace:"nowrap",
+            }}
+          >
+            <span style={{
+              width:7,height:7,borderRadius:"50%",background:"#22c55e",
+              boxShadow:"0 0 0 3px rgba(34,197,94,0.2)",flexShrink:0,
+              animation:"hpulse 2.4s ease infinite",display:"inline-block",
+            }}/>
+            <span style={{fontSize:"0.68rem",fontWeight:700,color:text1}}>Open to work</span>
+          </motion.div>
         </motion.div>
+
       </div>
+
+      {/* Bottom fade */}
+      <div style={{
+        position:"absolute",bottom:0,left:0,right:0,
+        height:100,zIndex:2,pointerEvents:"none",
+        background:`linear-gradient(to bottom,transparent,${pageBg})`,
+      }}/>
+
+      <style>{`
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        ::-webkit-scrollbar {
+          display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        html, body {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          overflow: hidden;
+          height: 100%;
+        }
+        @keyframes orbit {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        @keyframes hpulse {
+          0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.20); }
+          50%      { box-shadow: 0 0 0 6px rgba(34,197,94,0.06); }
+        }
+        @media (max-width: 760px) {
+          .hero-grid {
+            grid-template-columns: 1fr !important;
+            gap: 3rem !important;
+            padding-top: 6.5rem !important;
+            text-align: center;
+          }
+          .hero-photo-wrap {
+            width: clamp(200px,62vw,280px) !important;
+            height: clamp(200px,62vw,280px) !important;
+            margin: 0 auto;
+            order: -1;
+          }
+          .hero-grid > div:first-child {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+        }
+      `}</style>
     </section>
   );
 }
