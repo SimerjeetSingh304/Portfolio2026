@@ -1,6 +1,9 @@
 import { TypeAnimation } from "react-type-animation";
-import { motion } from "framer-motion";
-import { FiDownload, FiGithub, FiArrowDownRight } from "react-icons/fi";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { FiDownload, FiGithub, FiArrowRight } from "react-icons/fi";
+import { Link as ScrollLink } from "react-scroll";
+import { useNavigate } from "react-router-dom";
 import profilePhoto from "../../assets/Gemini_Generated_Image_ufqljnufqljnufql (1).jpg";
 
 const YOUR_NAME_LINE1 = "Simerjeet";
@@ -21,6 +24,67 @@ const STATS = [
   { value: "3+",   label: "Years coding" },
 ];
 
+const CARDS = [
+  {
+    tag: "About",
+    content: (isDark) => (
+      <p style={{
+        fontSize: "0.88rem", lineHeight: 1.75, fontWeight: 300,
+        color: isDark ? "#94a3b8" : "#64748b", margin: 0,
+      }}>
+        A Computer Science student at Maharaja Surajmal Institute of Technology
+        with a strong foundation in full-stack development and ML engineering.
+      </p>
+    ),
+    link: "about",
+  },
+  {
+    tag: "Recent Experience",
+    content: (isDark) => (
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        {[
+          { role: "Founder & Technical Lead", org: "Geek Room", period: "2023 – Present" },
+          { role: "GDG Lead",                 org: "Google Developer Groups", period: "2024 – Present" },
+        ].map((e, i) => (
+          <div key={i} style={{
+            paddingLeft: "0.9rem",
+            borderLeft: `2px solid ${isDark ? "rgba(59,130,246,0.35)" : "rgba(59,130,246,0.3)"}`,
+          }}>
+            <div style={{ fontSize: "0.88rem", fontWeight: 700, color: isDark ? "#f1f5f9" : "#0f172a" }}>
+              {e.role}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: isDark ? "#475569" : "#94a3b8", marginTop: "0.15rem" }}>
+              {e.org} · {e.period}
+            </div>
+          </div>
+        ))}
+      </div>
+    ),
+    link: "about",
+  },
+  {
+    tag: "Tech Stack",
+    content: (isDark) => (
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+        {["JavaScript", "React.js", "Tailwind CSS", "RESTful APIs", "Git", "GitHub", "Python", "Node.js"].map((t) => (
+          <span key={t} style={{
+            padding: "0.28rem 0.75rem",
+            borderRadius: 50,
+            border: `1px solid ${isDark ? "rgba(59,130,246,0.22)" : "rgba(59,130,246,0.18)"}`,
+            background: isDark ? "rgba(59,130,246,0.06)" : "rgba(59,130,246,0.04)",
+            fontSize: "0.72rem", fontWeight: 600,
+            color: isDark ? "#93c5fd" : "#2563eb",
+            letterSpacing: "0.02em",
+          }}>
+            {t}
+          </span>
+        ))}
+      </div>
+    ),
+    link: "skills",
+  },
+];
+
 const up = (delay = 0) => ({
   initial: { opacity: 0, y: 22 },
   animate: { opacity: 1, y: 0 },
@@ -34,22 +98,38 @@ const fadeOnly = (delay = 0) => ({
 });
 
 export default function Hero({ darkMode }) {
-  const isDark = !!darkMode;
+  const isDark  = !!darkMode;
+  const sectionRef = useRef(null);
+  const navigate = useNavigate();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Cards slide up as user scrolls into the bottom of the hero
+  const cardsY   = useTransform(scrollYProgress, [0, 0.25], ["100px", "0px"]);
+  const cardsOp  = useTransform(scrollYProgress, [0, 0.2],  [0, 1]);
 
   const text1   = isDark ? "#f8fafc" : "#0f172a";
   const text2   = isDark ? "#94a3b8" : "#64748b";
   const textMid = isDark ? "#cbd5e1" : "#334155";
   const border  = isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.10)";
   const pageBg  = isDark ? "#050507" : "#f4f6f9";
+  const cardBg  = isDark ? "rgba(10,12,18,0.85)" : "rgba(255,255,255,0.9)";
+  const cardBorder = isDark ? "rgba(59,130,246,0.15)" : "rgba(15,23,42,0.09)";
 
   return (
     <section
       id="hero"
+      ref={sectionRef}
       style={{
         position: "relative",
-        height: "100svh",
+        minHeight: "100svh",
         display: "flex",
-        alignItems: "center",
+        flexDirection: "column",
+        justifyContent: "center",
+        paddingBottom: "8rem",
         overflow: "hidden",
         background: "transparent",
       }}
@@ -67,25 +147,30 @@ export default function Hero({ darkMode }) {
       }}/>
 
       {/* Dot grid */}
-      {/* Subtle dot grid removed for standardization */}
+      {isDark && (
+        <div style={{
+          position:"absolute",inset:0,opacity:0.15,zIndex:0,pointerEvents:"none",
+          backgroundImage:"radial-gradient(rgba(255,255,255,0.5) 1px,transparent 1px)",
+          backgroundSize:"32px 32px",
+        }}/>
+      )}
 
-      {/* Layout grid */}
+      {/* ── Main content ─────────────────────────────────────── */}
       <div
         className="hero-grid"
         style={{
           position:"relative",zIndex:1,
+          flex: 1,
           maxWidth:1280,width:"100%",margin:"0 auto",
-          padding:"8rem 2rem 5rem",
+          padding:"7rem 2rem 2rem",
           display:"grid",
           gridTemplateColumns:"1fr auto",
           alignItems:"center",
           gap:"5rem",
         }}
       >
-
-        {/* ── LEFT ── */}
+        {/* LEFT */}
         <div>
-
           {/* Availability pill */}
           <motion.div {...fadeOnly(0.1)} style={{marginBottom:"2.75rem"}}>
             <span style={{
@@ -94,14 +179,11 @@ export default function Hero({ darkMode }) {
               borderRadius:50,
               border:`1px solid ${isDark?"rgba(59,130,246,0.28)":"rgba(59,130,246,0.22)"}`,
               background:isDark?"rgba(59,130,246,0.06)":"rgba(59,130,246,0.05)",
-              fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.05em",
-              color:"#3b82f6",
+              fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.05em",color:"#3b82f6",
             }}>
               <span style={{
-                width:7,height:7,borderRadius:"50%",
-                background:"#22c55e",
-                boxShadow:"0 0 0 3px rgba(34,197,94,0.2)",
-                display:"inline-block",
+                width:7,height:7,borderRadius:"50%",background:"#22c55e",
+                boxShadow:"0 0 0 3px rgba(34,197,94,0.2)",display:"inline-block",
                 animation:"hpulse 2.4s ease infinite",
               }}/>
               Available for opportunities
@@ -119,11 +201,7 @@ export default function Hero({ darkMode }) {
 
           {/* Name */}
           <div style={{marginBottom:"1.75rem",lineHeight:0.9}}>
-            <motion.div
-              initial={{opacity:0,x:-36}}
-              animate={{opacity:1,x:0}}
-              transition={{duration:0.8,delay:0.22,ease:[0.22,1,0.36,1]}}
-            >
+            <motion.div initial={{opacity:0,x:-36}} animate={{opacity:1,x:0}} transition={{duration:0.8,delay:0.22,ease:[0.22,1,0.36,1]}}>
               <span style={{
                 display:"block",
                 fontSize:"clamp(3rem,8.5vw,7.2rem)",
@@ -132,11 +210,7 @@ export default function Hero({ darkMode }) {
                 {YOUR_NAME_LINE1}
               </span>
             </motion.div>
-            <motion.div
-              initial={{opacity:0,x:-36}}
-              animate={{opacity:1,x:0}}
-              transition={{duration:0.8,delay:0.30,ease:[0.22,1,0.36,1]}}
-            >
+            <motion.div initial={{opacity:0,x:-36}} animate={{opacity:1,x:0}} transition={{duration:0.8,delay:0.30,ease:[0.22,1,0.36,1]}}>
               <span style={{
                 display:"block",
                 fontSize:"clamp(3rem,8.5vw,7.2rem)",
@@ -191,8 +265,7 @@ export default function Hero({ darkMode }) {
               padding:"0.82rem 1.9rem",borderRadius:50,
               background:"linear-gradient(130deg,#3b82f6,#6366f1)",
               color:"#fff",fontSize:"0.84rem",fontWeight:700,letterSpacing:"0.02em",
-              textDecoration:"none",
-              boxShadow:"0 6px 28px rgba(59,130,246,0.3)",
+              textDecoration:"none",boxShadow:"0 6px 28px rgba(59,130,246,0.3)",
               transition:"transform 0.2s,box-shadow 0.2s",
             }}
               onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 10px 36px rgba(59,130,246,0.46)";}}
@@ -200,7 +273,6 @@ export default function Hero({ darkMode }) {
             >
               <FiDownload size={15}/> Download CV
             </a>
-
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" style={{
               display:"inline-flex",alignItems:"center",gap:"0.5rem",
               padding:"0.82rem 1.9rem",borderRadius:50,
@@ -214,15 +286,12 @@ export default function Hero({ darkMode }) {
             >
               <FiGithub size={15}/> GitHub
             </a>
-
-
           </motion.div>
 
           {/* Stats */}
           <motion.div {...fadeOnly(0.85)} style={{
             display:"flex",alignItems:"center",gap:"2.25rem",
-            paddingTop:"2.25rem",
-            borderTop:`1px solid ${border}`,
+            paddingTop:"2.25rem",borderTop:`1px solid ${border}`,
           }}>
             {STATS.map((s,i)=>(
               <div key={i}>
@@ -244,7 +313,7 @@ export default function Hero({ darkMode }) {
           </motion.div>
         </div>
 
-        {/* ── RIGHT – Photo ── */}
+        {/* RIGHT – Photo */}
         <motion.div
           className="hero-photo-wrap"
           initial={{opacity:0,scale:0.88}}
@@ -257,7 +326,6 @@ export default function Hero({ darkMode }) {
             flexShrink:0,
           }}
         >
-          {/* Outer orbit ring */}
           <div style={{
             position:"absolute",inset:"-13%",borderRadius:"50%",
             border:`1px solid ${isDark?"rgba(59,130,246,0.14)":"rgba(59,130,246,0.11)"}`,
@@ -270,15 +338,11 @@ export default function Hero({ darkMode }) {
               transform:"translate(-50%,-50%)",
             }}/>
           </div>
-
-          {/* Dashed inner ring */}
           <div style={{
             position:"absolute",inset:"-4%",borderRadius:"50%",
             border:`1px dashed ${isDark?"rgba(255,255,255,0.05)":"rgba(15,23,42,0.07)"}`,
             animation:"orbit 34s linear infinite reverse",pointerEvents:"none",
           }}/>
-
-          {/* Photo */}
           <div style={{
             width:"100%",height:"100%",borderRadius:"50%",padding:3,
             background:"linear-gradient(140deg,#3b82f6 0%,#818cf8 55%,#f59e0b 100%)",
@@ -298,15 +362,13 @@ export default function Hero({ darkMode }) {
 
           {/* Badge bottom-right */}
           <motion.div
-            initial={{opacity:0,y:10,scale:0.7}}
-            animate={{opacity:1,y:0,scale:1}}
+            initial={{opacity:0,y:10,scale:0.7}} animate={{opacity:1,y:0,scale:1}}
             transition={{delay:0.9,duration:0.55,ease:[0.22,1,0.36,1]}}
             style={{
               position:"absolute",bottom:"4%",right:"-6%",
               padding:"0.6rem 1rem",borderRadius:14,
               background:isDark?"rgba(8,8,12,0.92)":"rgba(255,255,255,0.96)",
-              border:`1px solid ${border}`,
-              boxShadow:"0 8px 28px rgba(0,0,0,0.18)",
+              border:`1px solid ${border}`,boxShadow:"0 8px 28px rgba(0,0,0,0.18)",
               backdropFilter:"blur(14px)",
               display:"flex",alignItems:"center",gap:"0.5rem",whiteSpace:"nowrap",
             }}
@@ -320,8 +382,7 @@ export default function Hero({ darkMode }) {
 
           {/* Badge top-left */}
           <motion.div
-            initial={{opacity:0,y:-10,scale:0.7}}
-            animate={{opacity:1,y:0,scale:1}}
+            initial={{opacity:0,y:-10,scale:0.7}} animate={{opacity:1,y:0,scale:1}}
             transition={{delay:1.05,duration:0.55,ease:[0.22,1,0.36,1]}}
             style={{
               position:"absolute",top:"6%",left:"-14%",
@@ -341,28 +402,128 @@ export default function Hero({ darkMode }) {
             <span style={{fontSize:"0.68rem",fontWeight:700,color:text1}}>Open to work</span>
           </motion.div>
         </motion.div>
-
       </div>
+
+      {/* ── Preview Cards ─────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 80, damping: 18, delay: 1.2 }}
+      >
+        <div style={{
+          position: "relative", zIndex: 3,
+          maxWidth: 1280, margin: "0 auto",
+          padding: "0 2rem 3rem",
+        }}>
+          <div className="hero-cards-grid">
+            {CARDS.map((card, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -4, transition: { duration: 0.22 } }}
+                style={{
+                  borderRadius: 20,
+                  border: `1px solid ${cardBorder}`,
+                  background: cardBg,
+                  backdropFilter: "blur(20px)",
+                  padding: "1.5rem 1.75rem",
+                  boxShadow: isDark
+                    ? "0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.06)"
+                    : "0 8px 32px rgba(15,23,42,0.08), 0 0 0 1px rgba(15,23,42,0.04)",
+                  cursor: "pointer",
+                  transition: "border-color 0.2s, box-shadow 0.2s",
+                }}
+                onHoverStart={e => {
+                  if (e.currentTarget?.style) {
+                    e.currentTarget.style.borderColor = "rgba(59,130,246,0.35)";
+                    e.currentTarget.style.boxShadow = isDark
+                      ? "0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.15)"
+                      : "0 12px 40px rgba(59,130,246,0.12)";
+                  }
+                }}
+                onHoverEnd={e => {
+                  if (e.currentTarget?.style) {
+                    e.currentTarget.style.borderColor = cardBorder;
+                    e.currentTarget.style.boxShadow = isDark
+                      ? "0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.06)"
+                      : "0 8px 32px rgba(15,23,42,0.08)";
+                  }
+                }}
+              >
+                {/* Card header */}
+                {card.link === "skills" ? (
+                  <div
+                    onClick={() => navigate("/skills")}
+                    style={{
+                      display: "flex", alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: "1.1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span style={{
+                      fontFamily: "monospace",
+                      fontSize: "0.65rem",
+                      letterSpacing: "0.2em",
+                      textTransform: "uppercase",
+                      fontWeight: 700,
+                      color: "#3b82f6",
+                    }}>
+                      {card.tag}
+                    </span>
+                    <FiArrowRight
+                      size={14}
+                      color="#3b82f6"
+                      style={{ opacity: 0.7 }}
+                    />
+                  </div>
+                ) : (
+                  <ScrollLink
+                    to={card.link}
+                    smooth duration={600} offset={-70}
+                    style={{
+                      display: "flex", alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: "1.1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span style={{
+                      fontFamily: "monospace",
+                      fontSize: "0.65rem",
+                      letterSpacing: "0.2em",
+                      textTransform: "uppercase",
+                      fontWeight: 700,
+                      color: "#3b82f6",
+                    }}>
+                      {card.tag}
+                    </span>
+                    <FiArrowRight
+                      size={14}
+                      color="#3b82f6"
+                      style={{ opacity: 0.7 }}
+                    />
+                  </ScrollLink>
+                )}
+
+                {/* Card body */}
+                {card.content(isDark)}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
 
       {/* Bottom fade */}
       <div style={{
         position:"absolute",bottom:0,left:0,right:0,
-        height:100,zIndex:2,pointerEvents:"none",
+        height:80,zIndex:2,pointerEvents:"none",
         background:`linear-gradient(to bottom,transparent,${pageBg})`,
       }}/>
 
       <style>{`
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        ::-webkit-scrollbar {
-          display: none;
-        }
-        /* Hide scrollbar for IE, Edge and Firefox */
-        html, body {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          overflow: hidden;
-          height: 100%;
-        }
         @keyframes orbit {
           from { transform: rotate(0deg); }
           to   { transform: rotate(360deg); }
@@ -371,6 +532,19 @@ export default function Hero({ darkMode }) {
           0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.20); }
           50%      { box-shadow: 0 0 0 6px rgba(34,197,94,0.06); }
         }
+
+        .hero-cards-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.25rem;
+        }
+
+        @media (max-width: 900px) {
+          .hero-cards-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
         @media (max-width: 760px) {
           .hero-grid {
             grid-template-columns: 1fr !important;

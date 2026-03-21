@@ -265,7 +265,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from
 
 const dockLinks = [
   { label: "Home",      to: "/",         type: "router", icon: FiHome },
-  { label: "Skills",    to: "/#skills",  type: "router", icon: FiTerminal },
+  { label: "Skills",    to: "/skills",   type: "router", icon: FiTerminal },
   { label: "Projects",  to: "/projects", type: "router", icon: FiFolder },
   { label: "About",     to: "/about",    type: "router", icon: FiLayers },
   { label: "Contact",   to: "/contact",  type: "router", icon: FiMail },
@@ -326,10 +326,12 @@ function DockItem({ children, label, mouseX, darkMode }) {
 }
 
 /* ── Animated Pill Nav Link ─────────────────────────────────────────────── */
-function PillNavLink({ link, activeSection, setActiveSection }) {
+function PillNavLink({ link, darkMode }) {
   const [hovered, setHovered] = useState(false);
   const location = useLocation();
   const isActive = location.pathname === link.to;
+
+  const accentColor = "#3b82f6";
 
   return (
     <RouterLink
@@ -338,7 +340,6 @@ function PillNavLink({ link, activeSection, setActiveSection }) {
       onMouseLeave={() => setHovered(false)}
       style={{ position: "relative", cursor: "pointer", textDecoration: "none" }}
     >
-      {/* Sliding background highlight */}
       <AnimatePresence>
         {(hovered || isActive) && (
           <motion.span
@@ -351,10 +352,9 @@ function PillNavLink({ link, activeSection, setActiveSection }) {
               position: "absolute",
               inset: 0,
               borderRadius: "999px",
-              background: isActive
-                ? "rgba(180,255,220,0.10)"
-                : "rgba(180,255,220,0.05)",
-              boxShadow: isActive ? "0 0 12px rgba(180,255,220,0.12)" : "none",
+              background: isActive 
+                ? (darkMode ? "rgba(59, 130, 246, 0.15)" : "rgba(59, 130, 246, 0.08)")
+                : (darkMode ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.03)"),
               zIndex: 0,
             }}
           />
@@ -366,17 +366,17 @@ function PillNavLink({ link, activeSection, setActiveSection }) {
           position: "relative",
           zIndex: 1,
           display: "block",
-          padding: "8px 24px",
+          padding: "8px 20px",
           borderRadius: "999px",
-          fontSize: "14px",
+          fontSize: "13px",
           fontWeight: 600,
-          letterSpacing: "0.04em",
+          letterSpacing: "0.02em",
           color: isActive
-            ? "#b4ffdc"
+            ? (darkMode ? "#60a5fa" : "#2563eb")
             : hovered
-            ? "rgba(180,255,220,0.90)"
-            : "rgba(180,255,220,0.55)",
-          transition: "color 0.22s ease",
+            ? (darkMode ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.9)")
+            : (darkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)"),
+          transition: "color 0.2s ease",
           whiteSpace: "nowrap",
         }}
       >
@@ -395,7 +395,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
   const mouseX = useMotionValue(Infinity);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.7);
+    const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -455,30 +455,70 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
         /* ── TOP HEADER (MINT PILL) ──────────────────────────────── */
         <motion.nav
           key="top-nav"
-          initial={{ y: -80, opacity: 0 }}
+          initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -80, opacity: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed top-8 left-0 right-0 z-[100] flex justify-center pointer-events-none"
+          exit={{ y: -100, opacity: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed top-6 left-0 right-0 z-[100] flex justify-center px-4 pointer-events-none"
           style={{ fontFamily: "'Syne', sans-serif" }}
         >
           <div
-            className="pointer-events-auto flex items-center gap-1 px-2 py-1.5 rounded-full border backdrop-blur-md"
+            className="pointer-events-auto flex items-center justify-between w-full max-w-4xl px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-xl"
             style={{
-              background: "rgba(5, 5, 5, 0.55)",
-              borderColor: "rgba(180, 255, 220, 0.18)",
-              boxShadow:
-                "0 0 32px rgba(100, 255, 180, 0.06), inset 0 0 16px rgba(100, 255, 180, 0.03)",
+              background: darkMode 
+                ? "rgba(10, 10, 12, 0.7)" 
+                : "rgba(255, 255, 255, 0.75)",
+              boxShadow: darkMode
+                ? "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05)"
+                : "0 8px 32px rgba(31, 38, 135, 0.07), inset 0 0 0 1px rgba(255, 255, 255, 0.2)",
             }}
           >
-            {topNavLinks.map((link) => (
-              <PillNavLink
-                key={link.label}
-                link={link}
-                activeSection={activeSection}
-                setActiveSection={setActiveSection}
-              />
-            ))}
+            {/* Left: Home Link / Logo */}
+            <div className="flex items-center pl-2">
+              <RouterLink 
+                to="/" 
+                className="group flex items-center gap-2 text-decoration-none"
+              >
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                  darkMode ? "bg-white/10 group-hover:bg-white/20" : "bg-black/5 group-hover:bg-black/10"
+                }`}>
+                  <FiHome size={16} className={darkMode ? "text-blue-400" : "text-blue-600"} />
+                </div>
+                <span className={`text-sm font-bold tracking-tight transition-colors duration-300 ${
+                  darkMode ? "text-white group-hover:text-blue-400" : "text-slate-900 group-hover:text-blue-600"
+                }`}>
+                  Portfolio.
+                </span>
+              </RouterLink>
+            </div>
+
+            {/* Center: Nav Links */}
+            <div className="hidden md:flex items-center gap-1">
+              {topNavLinks.map((link) => (
+                <PillNavLink
+                  key={link.label}
+                  link={link}
+                  activeSection={activeSection}
+                  setActiveSection={setActiveSection}
+                  darkMode={darkMode}
+                />
+              ))}
+            </div>
+
+            {/* Right: Theme Toggle */}
+            <div className="flex items-center pr-1">
+              <button
+                onClick={toggleDarkMode}
+                aria-label="Toggle theme"
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  darkMode 
+                    ? "bg-white/5 hover:bg-white/10 text-amber-400 shadow-inner" 
+                    : "bg-black/5 hover:bg-black/10 text-slate-600 shadow-sm"
+                }`}
+              >
+                {darkMode ? <FiSun size={18} strokeWidth={2.5} /> : <FiMoon size={18} strokeWidth={2.5} />}
+              </button>
+            </div>
           </div>
 
           <style>{`

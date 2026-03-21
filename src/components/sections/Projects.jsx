@@ -1,426 +1,410 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { FiGithub, FiExternalLink, FiArrowRight } from "react-icons/fi";
-import { SiReact, SiNextdotjs, SiTailwindcss, SiNodedotjs, SiPython } from "react-icons/si";
-import { FiCode } from "react-icons/fi";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect, useMemo } from "react";
+import { FiGithub, FiExternalLink, FiArrowRight, FiStar, FiCode, FiEye, FiHeart, FiClock, FiTrendingUp } from "react-icons/fi";
+import { SiReact, SiNextdotjs, SiTailwindcss, SiNodedotjs, SiPython, SiTypescript, SiMongodb, SiPostgresql, SiTensorflow, SiDocker } from "react-icons/si";
 import projects from "../../data/projects.js";
 
-/* ── Tech icon map ─────────────────────────────────────────────────────── */
-const TECH_ICONS = {
-  "React":     <SiReact />,
-  "Next.js":   <SiNextdotjs />,
-  "Tailwind":  <SiTailwindcss />,
-  "Node.js":   <SiNodedotjs />,
-  "Python":    <SiPython />,
+// Enhanced tech icon mapping
+const techIcons = {
+  "React": { icon: SiReact, color: "#61DAFB" },
+  "Next.js": { icon: SiNextdotjs, color: "#ffffff" },
+  "Tailwind": { icon: SiTailwindcss, color: "#06B6D4" },
+  "Node.js": { icon: SiNodedotjs, color: "#339933" },
+  "Python": { icon: SiPython, color: "#3776AB" },
+  "TypeScript": { icon: SiTypescript, color: "#3178C6" },
+  "MongoDB": { icon: SiMongodb, color: "#47A248" },
+  "PostgreSQL": { icon: SiPostgresql, color: "#4169E1" },
+  "TensorFlow": { icon: SiTensorflow, color: "#FF6F00" },
+  "Docker": { icon: SiDocker, color: "#2496ED" }
 };
-const getTechIcon = (t) => TECH_ICONS[t] ?? <FiCode />;
 
-/* accent per project index */
-const ACCENTS = ["#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444", "#ec4899"];
+const getTechIcon = (tech) => {
+  const found = techIcons[tech];
+  if (found) {
+    const IconComponent = found.icon;
+    return <IconComponent style={{ color: found.color }} size={14} />;
+  }
+  return <FiCode size={14} className="text-gray-400" />;
+};
 
-/* ── Single project slide ──────────────────────────────────────────────── */
-function ProjectSlide({ project, index, total, isDark }) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+export default function Projects({ darkMode }) {
+  const isDark = darkMode;
+  const containerRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [hoveredProject, setHoveredProject] = useState(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
-  const imgX    = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], ["6%", "0%", "0%", "-4%"]);
-  const textX   = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], ["4%", "0%", "0%", "-4%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
-  const accent = ACCENTS[index % ACCENTS.length];
-  const isEven = index % 2 === 0;
+  // Calculate which project is active based on scroll
+  const projectCount = projects.length;
+  const activeProjectIndex = useTransform(smoothProgress, [0, 0.33, 0.66, 0.99], [0, 1, 2, 2]);
+  
+  useEffect(() => {
+    const unsubscribe = activeProjectIndex.onChange(value => {
+      setActiveIndex(Math.floor(value));
+    });
+    return () => unsubscribe();
+  }, [activeProjectIndex]);
 
-  const border  = isDark ? "rgba(255,255,255,0.07)" : "rgba(15,23,42,0.08)";
-  const cardBg  = isDark ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.9)";
-  const text1   = isDark ? "#f1f5f9" : "#0f172a";
-  const text2   = isDark ? "#64748b" : "#64748b";
+  // Memoize tech pyramid arrangement
+  const arrangeTechPyramid = useMemo(() => (techs) => {
+    if (!techs || techs.length === 0) return [];
+    const rows = [];
+    const counts = [Math.ceil(techs.length / 3), Math.floor(techs.length / 3), Math.floor(techs.length / 3)];
+    let remaining = [...techs];
+    
+    counts.forEach(count => {
+      if (remaining.length > 0) {
+        rows.push(remaining.splice(0, Math.min(count, remaining.length)));
+      }
+    });
+    return rows;
+  }, []);
+
+  const currentProject = projects[activeIndex];
+  const nextProject = projects[(activeIndex + 1) % projectCount];
+  const prevProject = projects[(activeIndex - 1 + projectCount) % projectCount];
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ opacity }}
-      className="project-slide"
+    <div 
+      ref={containerRef} 
+      className={`relative h-[400vh] ${isDark ? "bg-black" : "bg-gradient-to-br from-slate-50 via-white to-slate-100"}`}
     >
-      {/* Large index number — background watermark */}
-      <div style={{
-        position: "absolute",
-        top: "50%", left: "50%",
-        transform: "translate(-50%,-50%)",
-        fontSize: "clamp(12rem, 30vw, 22rem)",
-        fontWeight: 900,
-        letterSpacing: "-0.06em",
-        color: accent,
-        opacity: 0.04,
-        lineHeight: 1,
-        pointerEvents: "none",
-        userSelect: "none",
-        zIndex: 0,
-      }}>
-        {String(index + 1).padStart(2, "0")}
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Gradient Orbs */}
+        <div className="absolute top-1/4 -left-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-[100px] animate-pulse delay-1000" />
+        
+        {/* Grid Pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, ${isDark ? '#fff' : '#000'} 1px, transparent 1px)`,
+            backgroundSize: "50px 50px",
+          }}
+        />
+        
+        {/* Animated Lines */}
+        <svg className="absolute inset-0 w-full h-full">
+          <defs>
+            <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#3B82F6" stopOpacity="0" />
+              <stop offset="50%" stopColor="#3B82F6" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <motion.line
+            x1="0%" y1="30%" x2="100%" y2="30%"
+            stroke="url(#line-gradient)"
+            strokeWidth="1"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.3 }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        </svg>
       </div>
 
-      {/* Content split */}
-      <div style={{
-        position: "relative", zIndex: 1,
-        display: "grid",
-        gridTemplateColumns: isEven ? "1.1fr 0.9fr" : "0.9fr 1.1fr",
-        gap: "3rem",
-        alignItems: "center",
-        width: "100%",
-        maxWidth: 1320,
-        margin: "0 auto",
-        padding: "0 2.5rem",
-      }} className="project-inner">
-
-        {/* Image */}
-        <motion.div
-          style={{ x: isEven ? imgX : textX, order: isEven ? 0 : 1 }}
-        >
-          <div style={{
-            position: "relative",
-            borderRadius: 24,
-            overflow: "hidden",
-            aspectRatio: "16/10",
-            border: `1px solid ${border}`,
-            boxShadow: `0 32px 80px rgba(0,0,0,${isDark ? 0.4 : 0.12}), 0 0 0 1px ${border}`,
-          }}>
-            <img
-              src={project.image}
-              alt={project.name}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            />
-            {/* Overlay gradient */}
-            <div style={{
-              position: "absolute", inset: 0,
-              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%)",
-            }} />
-
-            {/* Category badge */}
-            <span style={{
-              position: "absolute", bottom: 20, left: 20,
-              padding: "0.3rem 0.9rem",
-              borderRadius: 50,
-              background: accent,
-              color: "#fff",
-              fontSize: "0.65rem",
-              fontWeight: 800,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-            }}>
-              {project.category}
-            </span>
-
-            {/* Accent glow behind image */}
-            <div style={{
-              position: "absolute", inset: "-30%",
-              background: `radial-gradient(circle at 50% 50%, ${accent}22, transparent 65%)`,
-              pointerEvents: "none",
-              zIndex: -1,
-            }} />
-          </div>
-        </motion.div>
-
-        {/* Text */}
-        <motion.div
-          style={{ x: isEven ? textX : imgX, order: isEven ? 1 : 0 }}
-        >
-          {/* Index + line */}
-          <div style={{
-            display: "flex", alignItems: "center", gap: "1rem",
-            marginBottom: "1.5rem",
-          }}>
-            <span style={{
-              fontFamily: "monospace",
-              fontSize: "0.7rem",
-              letterSpacing: "0.18em",
-              color: accent,
-              fontWeight: 700,
-            }}>
-              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-            </span>
-            <div style={{ flex: 1, height: 1, background: `${accent}44` }} />
-          </div>
-
-          {/* Title */}
-          <h3 style={{
-            fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
-            fontWeight: 900,
-            letterSpacing: "-0.03em",
-            lineHeight: 1.0,
-            color: text1,
-            marginBottom: "1.25rem",
-          }}>
-            {project.name}
-          </h3>
-
-          {/* Description */}
-          <p style={{
-            fontSize: "1rem",
-            lineHeight: 1.75,
-            fontWeight: 300,
-            color: text2,
-            marginBottom: "2rem",
-            maxWidth: 440,
-          }}>
-            {project.description}
-          </p>
-
-          {/* Tech tags */}
-          <div style={{
-            display: "flex", flexWrap: "wrap", gap: "0.5rem",
-            marginBottom: "2.5rem",
-          }}>
-            {project.tech?.slice(0, 6).map((t) => (
-              <span key={t} style={{
-                display: "inline-flex", alignItems: "center", gap: "0.35rem",
-                padding: "0.3rem 0.85rem",
-                borderRadius: 50,
-                border: `1px solid ${border}`,
-                background: isDark ? "rgba(255,255,255,0.04)" : "rgba(15,23,42,0.03)",
-                fontSize: "0.72rem",
-                fontWeight: 600,
-                letterSpacing: "0.04em",
-                color: text2,
-              }}>
-                <span style={{ fontSize: "0.85rem", color: accent }}>{getTechIcon(t)}</span>
-                {t}
-              </span>
+      {/* Sticky Container */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <div className="relative w-full h-full flex items-center justify-center">
+          
+          {/* Progress Indicator */}
+          <div className="absolute top-12 right-12 z-50 flex gap-2">
+            {projects.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  const targetScroll = (idx / (projectCount - 1)) * containerRef.current.scrollHeight;
+                  containerRef.current.scrollTo({ top: targetScroll, behavior: "smooth" });
+                }}
+                className={`transition-all duration-300 ${
+                  activeIndex === idx 
+                    ? "w-8 h-2 bg-blue-500" 
+                    : "w-2 h-2 bg-white/30 hover:bg-white/50"
+                } rounded-full`}
+              />
             ))}
           </div>
 
-          {/* Action links */}
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
-            <a
-              href={project.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                padding: "0.78rem 1.75rem",
-                borderRadius: 50,
-                background: accent,
-                color: "#fff",
-                fontSize: "0.82rem",
-                fontWeight: 700,
-                letterSpacing: "0.04em",
-                textDecoration: "none",
-                boxShadow: `0 6px 24px ${accent}44`,
-                transition: "transform 0.2s, box-shadow 0.2s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${accent}66`; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = `0 6px 24px ${accent}44`; }}
-            >
-              Live Demo <FiExternalLink size={14} />
-            </a>
+          {/* Project Cards Container */}
+          <div className="relative w-full max-w-7xl px-6 lg:px-8">
+            
+            {/* Main Project Display */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="relative"
+              >
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                  
+                  {/* Left Side - Content */}
+                  <div className="space-y-8">
+                    {/* Category Badge */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="flex items-center gap-3"
+                    >
+                      <div className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 backdrop-blur-sm">
+                        <span className="text-sm font-bold text-blue-400 uppercase tracking-wider">
+                          {currentProject.category || "Featured Project"}
+                        </span>
+                      </div>
+                      {currentProject.featured && (
+                        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/30">
+                          <FiStar className="text-yellow-400" size={12} />
+                          <span className="text-xs font-bold text-yellow-400">Featured</span>
+                        </div>
+                      )}
+                    </motion.div>
 
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                padding: "0.78rem 1.5rem",
-                borderRadius: 50,
-                border: `1.5px solid ${border}`,
-                color: isDark ? "#94a3b8" : "#64748b",
-                fontSize: "0.82rem",
-                fontWeight: 700,
-                textDecoration: "none",
-                background: "transparent",
-                transition: "border-color 0.2s, color 0.2s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = accent + "66"; e.currentTarget.style.color = accent; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = border; e.currentTarget.style.color = isDark ? "#94a3b8" : "#64748b"; }}
-            >
-              <FiGithub size={15} /> Code
-            </a>
+                    {/* Title */}
+                    <motion.h2
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className={`text-6xl md:text-7xl lg:text-8xl font-black leading-tight ${
+                        isDark ? "text-white" : "text-slate-900"
+                      }`}
+                    >
+                      {currentProject.name}
+                    </motion.h2>
+
+                    {/* Description */}
+                    <motion.p
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 }}
+                      className={`text-lg leading-relaxed ${
+                        isDark ? "text-slate-300" : "text-slate-600"
+                      }`}
+                    >
+                      {currentProject.description}
+                    </motion.p>
+
+                    {/* Tech Stack */}
+                    {currentProject.tech && currentProject.tech.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="space-y-3"
+                      >
+                        <p className={`text-sm font-semibold uppercase tracking-wider ${
+                          isDark ? "text-slate-400" : "text-slate-500"
+                        }`}>
+                          Technologies Used
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {currentProject.tech.map((tech, idx) => (
+                            <motion.span
+                              key={idx}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.5 + idx * 0.05 }}
+                              className="group relative px-4 py-2 rounded-full text-sm font-medium bg-white/5 border border-white/10 hover:border-blue-500/50 transition-all duration-300 cursor-default backdrop-blur-sm"
+                            >
+                              <span className="relative z-10 flex items-center gap-2">
+                                {getTechIcon(tech)}
+                                {tech}
+                              </span>
+                            </motion.span>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                      className="flex flex-wrap gap-4 pt-4"
+                    >
+                      <a
+                        href={currentProject.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative px-8 py-3 rounded-full border border-white/20 text-white hover:text-blue-400 transition-all duration-300 overflow-hidden"
+                      >
+                        <div className="absolute inset-0 bg-blue-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                        <div className="relative flex items-center gap-3">
+                          <FiGithub size={20} />
+                          <span className="font-semibold">Source Code</span>
+                        </div>
+                      </a>
+                      <a
+                        href={currentProject.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative px-8 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                      >
+                        <div className="relative flex items-center gap-3">
+                          <FiExternalLink size={20} />
+                          <span className="font-semibold">Live Demo</span>
+                          <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </a>
+                    </motion.div>
+
+                    {/* Project Stats */}
+                    {currentProject.stats && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7 }}
+                        className="flex gap-6 pt-6 border-t border-white/10"
+                      >
+                        {currentProject.stats.map((stat, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            {stat.icon === "star" && <FiStar className="text-yellow-400" />}
+                            {stat.icon === "eye" && <FiEye className="text-blue-400" />}
+                            {stat.icon === "heart" && <FiHeart className="text-red-400" />}
+                            {stat.icon === "clock" && <FiClock className="text-green-400" />}
+                            <span className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+                              {stat.value}
+                            </span>
+                            <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                              {stat.label}
+                            </span>
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </div>
+
+                  {/* Right Side - Image */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 50, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                    className="relative"
+                  >
+                    <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
+                      {/* Image Container */}
+                      <div className="relative aspect-video overflow-hidden">
+                        <img
+                          src={currentProject.image}
+                          alt={currentProject.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </div>
+                      
+                      {/* Overlay Gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      {/* Glow Effect */}
+                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
+                      
+                      {/* Image Badge */}
+                      <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-xs font-bold text-white">
+                        {new Date().getFullYear()}
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Navigation Arrows */}
+            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+              <div className="flex justify-between">
+                <button
+                  onClick={() => {
+                    const prevIndex = (activeIndex - 1 + projectCount) % projectCount;
+                    const targetScroll = (prevIndex / (projectCount - 1)) * containerRef.current.scrollHeight;
+                    containerRef.current.scrollTo({ top: targetScroll, behavior: "smooth" });
+                  }}
+                  className="pointer-events-auto w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 -ml-6"
+                >
+                  <FiArrowRight className="rotate-180" size={24} />
+                </button>
+                <button
+                  onClick={() => {
+                    const nextIndex = (activeIndex + 1) % projectCount;
+                    const targetScroll = (nextIndex / (projectCount - 1)) * containerRef.current.scrollHeight;
+                    containerRef.current.scrollTo({ top: targetScroll, behavior: "smooth" });
+                  }}
+                  className="pointer-events-auto w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 -mr-6"
+                >
+                  <FiArrowRight size={24} />
+                </button>
+              </div>
+            </div>
+
+            {/* Project Thumbnails */}
+            <div className="absolute -bottom-20 left-0 right-0 flex justify-center gap-4">
+              {projects.map((project, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    const targetScroll = (idx / (projectCount - 1)) * containerRef.current.scrollHeight;
+                    containerRef.current.scrollTo({ top: targetScroll, behavior: "smooth" });
+                  }}
+                  onMouseEnter={() => setHoveredProject(idx)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  className="relative group"
+                >
+                  <div className={`w-16 h-16 rounded-lg overflow-hidden transition-all duration-300 ${
+                    activeIndex === idx 
+                      ? "ring-2 ring-blue-500 scale-110" 
+                      : "ring-1 ring-white/20 opacity-60 hover:opacity-100"
+                  }`}>
+                    <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
+                  </div>
+                  <AnimatePresence>
+                    {hoveredProject === idx && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-black/80 text-white text-xs whitespace-nowrap"
+                      >
+                        {project.name}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </button>
+              ))}
+            </div>
           </div>
-        </motion.div>
+
+          {/* Scroll Indicator */}
+          <motion.div
+            style={{ opacity: useTransform(smoothProgress, [0, 0.05], [1, 0]) }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+          >
+            <div className={`text-xs font-bold uppercase tracking-[0.3em] ${
+              isDark ? "text-slate-400" : "text-slate-500"
+            }`}>
+              Scroll to Explore
+            </div>
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className={`w-[2px] h-12 bg-gradient-to-b ${
+                isDark ? "from-blue-500 to-transparent" : "from-blue-500 to-transparent"
+              }`}
+            />
+          </motion.div>
+        </div>
       </div>
-    </motion.div>
-  );
-}
-
-/* ── Main Projects page ────────────────────────────────────────────────── */
-export default function Projects({ darkMode }) {
-  const isDark = !!darkMode;
-  const list = projects ?? [];
-
-  const text1 = isDark ? "#f8fafc" : "#0f172a";
-  const text2 = isDark ? "#64748b" : "#94a3b8";
-  const pageBg = isDark ? "transparent" : "#f4f6f9";
-
-  return (
-    <div style={{ position: "relative", background: pageBg, minHeight: "100vh" }}>
-
-      {/* Dot grid */}
-      {isDark && (
-        <div style={{
-          position: "fixed", inset: 0, opacity: 0.15, pointerEvents: "none", zIndex: 0,
-          backgroundImage: "radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }} />
-      )}
-
-      {/* ── Page header ──────────────────────────────────────────── */}
-      <div style={{
-        position: "relative", zIndex: 1,
-        maxWidth: 1320, margin: "0 auto",
-        padding: "8rem 2.5rem 5rem",
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: "2rem",
-      }}>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <span style={{
-            display: "inline-block",
-            fontFamily: "monospace",
-            fontSize: "0.68rem",
-            letterSpacing: "0.28em",
-            textTransform: "uppercase",
-            color: "#3b82f6",
-            marginBottom: "1rem",
-          }}>
-            / All Projects
-          </span>
-          <h1 style={{
-            fontSize: "clamp(3rem, 8vw, 6.5rem)",
-            fontWeight: 900,
-            letterSpacing: "-0.04em",
-            lineHeight: 0.95,
-            color: text1,
-            margin: 0,
-          }}>
-            Built with<br />
-            <span style={{
-              fontStyle: "italic",
-              background: "linear-gradient(130deg, #3b82f6, #818cf8)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}>
-              purpose.
-            </span>
-          </h1>
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          style={{
-            fontSize: "1rem",
-            lineHeight: 1.7,
-            fontWeight: 300,
-            color: text2,
-            maxWidth: 360,
-            alignSelf: "flex-end",
-          }}
-        >
-          A selection of projects spanning full-stack web, machine learning, and developer tooling — each built to solve a real problem.
-        </motion.p>
-      </div>
-
-      {/* ── Project slides ───────────────────────────────────────── */}
-      <div style={{ position: "relative", zIndex: 1 }}>
-        {list.map((project, i) => (
-          <ProjectSlide
-            key={project.id ?? i}
-            project={project}
-            index={i}
-            total={list.length}
-            isDark={isDark}
-          />
-        ))}
-      </div>
-
-      {/* ── Footer CTA ───────────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        style={{
-          position: "relative", zIndex: 1,
-          padding: "6rem 2.5rem 8rem",
-          textAlign: "center",
-          borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(15,23,42,0.07)"}`,
-        }}
-      >
-        <p style={{
-          fontSize: "0.72rem",
-          fontFamily: "monospace",
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: "#3b82f6",
-          marginBottom: "1.25rem",
-        }}>
-          Want to collaborate?
-        </p>
-        <h2 style={{
-          fontSize: "clamp(2rem, 5vw, 3.5rem)",
-          fontWeight: 900,
-          letterSpacing: "-0.03em",
-          color: text1,
-          marginBottom: "2rem",
-        }}>
-          Let's build something{" "}
-          <span style={{
-            fontStyle: "italic",
-            background: "linear-gradient(130deg,#3b82f6,#818cf8)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}>
-            great.
-          </span>
-        </h2>
-        <a
-          href="/#contact"
-          style={{
-            display: "inline-flex", alignItems: "center", gap: "0.6rem",
-            padding: "0.9rem 2.25rem",
-            borderRadius: 50,
-            background: "linear-gradient(130deg,#3b82f6,#6366f1)",
-            color: "#fff",
-            fontSize: "0.84rem",
-            fontWeight: 700,
-            letterSpacing: "0.04em",
-            textDecoration: "none",
-            boxShadow: "0 8px 32px rgba(59,130,246,0.3)",
-            transition: "transform 0.2s, box-shadow 0.2s",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(59,130,246,0.45)"; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 8px 32px rgba(59,130,246,0.3)"; }}
-        >
-          Get in touch <FiArrowRight size={14} />
-        </a>
-      </motion.div>
-
-      <style>{`
-        .project-slide {
-          position: relative;
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 5rem 0;
-          overflow: hidden;
-        }
-        @media (max-width: 768px) {
-          .project-inner {
-            grid-template-columns: 1fr !important;
-            gap: 2rem !important;
-          }
-          .project-inner > * {
-            order: unset !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

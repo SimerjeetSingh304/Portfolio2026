@@ -5,6 +5,7 @@ import HomePage from "./components/layout/HomePage.jsx";
 import Projects from "./components/sections/Projects.jsx";
 import AboutPage from "./components/layout/AboutPage.jsx";
 import ContactPage from "./components/layout/ContactPage.jsx";
+import SkillsPage from "./components/layout/SkillsPage.jsx";
 import Footer from "./components/layout/Footer.jsx";
 
 export default function App() {
@@ -183,6 +184,7 @@ export default function App() {
             <Route path="/" element={<HomePage darkMode={darkMode} />} />
             <Route path="/about" element={<AboutPage darkMode={darkMode} />} />
             <Route path="/projects" element={<Projects darkMode={darkMode} />} />
+            <Route path="/skills" element={<SkillsPage darkMode={darkMode} />} />
             <Route path="/contact" element={<ContactPage darkMode={darkMode} />} />
           </Routes>
         </main>

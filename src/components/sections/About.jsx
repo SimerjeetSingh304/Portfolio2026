@@ -136,7 +136,7 @@ export default function About({ darkMode }) {
         </motion.div>
 
         {/* ── 02 · Education ─────────────────────────────────── */}
-        <motion.div {...fadeUp(0.08)} style={{ marginBottom: "1.25rem" }}>
+        <motion.div id="education" {...fadeUp(0.08)} style={{ marginBottom: "1.25rem" }}>
           <div style={cardStyle({ padding: "3rem 3.5rem", position: "relative", overflow: "hidden", textAlign: "center" })} className="ab-hover">
             {/* Gradient top bar */}
             <div style={{

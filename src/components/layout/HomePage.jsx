@@ -7,6 +7,8 @@ export default function HomePage({ darkMode }) {
   return (
     <>
       <Hero darkMode={darkMode} />
+
+
     </>
   );
 }
