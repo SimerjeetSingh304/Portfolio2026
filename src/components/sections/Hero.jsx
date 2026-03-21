@@ -39,28 +39,18 @@ const CARDS = [
     link: "about",
   },
   {
-    tag: "Recent Experience",
+    tag: "View Projects",
     content: (isDark) => (
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {[
-          { role: "Founder & Technical Lead", org: "Geek Room", period: "2023 – Present" },
-          { role: "GDG Lead",                 org: "Google Developer Groups", period: "2024 – Present" },
-        ].map((e, i) => (
-          <div key={i} style={{
-            paddingLeft: "0.9rem",
-            borderLeft: `2px solid ${isDark ? "rgba(59,130,246,0.35)" : "rgba(59,130,246,0.3)"}`,
-          }}>
-            <div style={{ fontSize: "0.88rem", fontWeight: 700, color: isDark ? "#f1f5f9" : "#0f172a" }}>
-              {e.role}
-            </div>
-            <div style={{ fontSize: "0.75rem", color: isDark ? "#475569" : "#94a3b8", marginTop: "0.15rem" }}>
-              {e.org} · {e.period}
-            </div>
-          </div>
-        ))}
+        <p style={{
+          fontSize: "0.88rem", lineHeight: 1.75, fontWeight: 300,
+          color: isDark ? "#94a3b8" : "#64748b", margin: 0,
+        }}>
+          Explore my recent work, including full-stack applications, machine learning models, and open-source contributions.
+        </p>
       </div>
     ),
-    link: "about",
+    link: "projects",
   },
   {
     tag: "Tech Stack",
@@ -453,9 +443,9 @@ export default function Hero({ darkMode }) {
                 }}
               >
                 {/* Card header */}
-                {card.link === "skills" ? (
+                {card.link === "skills" || card.link === "projects" ? (
                   <div
-                    onClick={() => navigate("/skills")}
+                    onClick={() => navigate(`/${card.link}`)}
                     style={{
                       display: "flex", alignItems: "center",
                       justifyContent: "space-between",
