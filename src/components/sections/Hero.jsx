@@ -47,9 +47,8 @@ export default function Hero({ darkMode }) {
               नमस्ते! I am
             </h2>
             <h1
-              className={`text-5xl md:text-8xl font-black mb-6 tracking-tight ${
-                darkMode ? "text-white" : "text-slate-900"
-              }`}
+              className={`text-5xl md:text-8xl font-black mb-6 tracking-tight ${darkMode ? "text-white" : "text-slate-900"
+                }`}
             >
               {YOUR_NAME}
             </h1>
@@ -69,7 +68,7 @@ export default function Hero({ darkMode }) {
           </div>
 
           <p className={`text-lg mb-10 max-w-lg leading-relaxed ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
-            I am a full-stack developer with a passion for building high-quality web applications 
+            I am a full-stack developer with a passion for building high-quality web applications
             and solving complex problems through efficient code.
           </p>
 
@@ -90,11 +89,10 @@ export default function Hero({ darkMode }) {
               href={GITHUB_URL}
               target="_blank"
               rel="noreferrer"
-              className={`px-8 py-4 rounded-full font-bold text-base border-2 transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
-                darkMode
+              className={`px-8 py-4 rounded-full font-bold text-base border-2 transition-all duration-300 hover:scale-105 flex items-center gap-2 ${darkMode
                   ? "border-[#4F8EF7] text-white hover:bg-[#4F8EF7]/10"
                   : "border-slate-300 text-slate-800 hover:border-[#4F8EF7] hover:text-[#4F8EF7]"
-              }`}
+                }`}
             >
               <FiGithub size={18} />
               GitHub
@@ -111,7 +109,7 @@ export default function Hero({ darkMode }) {
         >
           {/* Decorative rings behind image */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-glow opacity-30 animate-pulse" />
-          
+
           <div
             className="relative w-64 h-64 md:w-96 md:h-96 rounded-full p-2"
             style={{
@@ -141,11 +139,10 @@ export default function Hero({ darkMode }) {
                 </div>
               )}
             </div>
-            
+
             {/* Floating badge effect like reference site */}
-            <div className={`absolute -bottom-4 right-8 px-4 py-2 rounded-2xl border shadow-2xl font-bold text-xs ${
-              darkMode ? "bg-black border-white/10 text-[#4F8EF7]" : "bg-white border-black/5 text-[#4F8EF7]"
-            }`}>
+            <div className={`absolute -bottom-4 right-8 px-4 py-2 rounded-2xl border shadow-2xl font-bold text-xs ${darkMode ? "bg-black border-white/10 text-[#4F8EF7]" : "bg-white border-black/5 text-[#4F8EF7]"
+              }`}>
               Code 👨‍💻
             </div>
           </div>
