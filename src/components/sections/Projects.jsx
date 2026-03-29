@@ -1,7 +1,7 @@
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValueEvent } from "framer-motion";
 import { useRef, useState, useEffect, useMemo } from "react";
 import { FiGithub, FiExternalLink, FiArrowRight, FiStar, FiCode, FiEye, FiHeart, FiClock, FiTrendingUp } from "react-icons/fi";
-import { SiReact, SiNextdotjs, SiTailwindcss, SiNodedotjs, SiPython, SiTypescript, SiMongodb, SiPostgresql, SiTensorflow, SiDocker } from "react-icons/si";
+import { SiReact, SiNextdotjs, SiTailwindcss, SiNodedotjs, SiPython, SiTypescript, SiMongodb, SiPostgresql, SiTensorflow, SiDocker, SiSocketdotio, SiGooglegemini, SiClerk, SiOpenai } from "react-icons/si";
 import projects from "../../data/projects.js";
 
 // Enhanced tech icon mapping
@@ -15,7 +15,12 @@ const techIcons = {
   "MongoDB": { icon: SiMongodb, color: "#47A248" },
   "PostgreSQL": { icon: SiPostgresql, color: "#4169E1" },
   "TensorFlow": { icon: SiTensorflow, color: "#FF6F00" },
-  "Docker": { icon: SiDocker, color: "#2496ED" }
+  "Docker": { icon: SiDocker, color: "#2496ED" },
+  "Socket.io": { icon: SiSocketdotio, color: "#010101" },
+  "Google Gemini": { icon: SiGooglegemini, color: "#8E75C2" },
+  "Clerk": { icon: SiClerk, color: "#6C47FF" },
+  "OpenAI": { icon: SiOpenai, color: "#412991" },
+  "Tailwind CSS": { icon: SiTailwindcss, color: "#06B6D4" }
 };
 
 const getTechIcon = (tech) => {
@@ -46,14 +51,16 @@ export default function Projects({ darkMode }) {
 
   // Calculate which project is active based on scroll
   const projectCount = projects.length;
-  const activeProjectIndex = useTransform(smoothProgress, [0, 0.33, 0.66, 0.99], [0, 1, 2, 2]);
+  // Create dynamic ranges based on project count
+  // Using projectCount instead of projectCount - 1 ensures the last project
+  // is reached well before the scroll ends, staying active for the remainder.
+  const progressRange = projects.map((_, i) => i / projectCount);
+  const projectIndices = projects.map((_, i) => i);
+  const activeProjectIndex = useTransform(smoothProgress, progressRange, projectIndices);
   
-  useEffect(() => {
-    const unsubscribe = activeProjectIndex.onChange(value => {
-      setActiveIndex(Math.floor(value));
-    });
-    return () => unsubscribe();
-  }, [activeProjectIndex]);
+  useMotionValueEvent(activeProjectIndex, "change", (latest) => {
+    setActiveIndex(Math.round(latest));
+  });
 
   // Memoize tech pyramid arrangement
   const arrangeTechPyramid = useMemo(() => (techs) => {
@@ -77,7 +84,8 @@ export default function Projects({ darkMode }) {
   return (
     <div 
       ref={containerRef} 
-      className={`relative h-[400vh] ${isDark ? "bg-black" : "bg-gradient-to-br from-slate-50 via-white to-slate-100"}`}
+      className={`relative ${isDark ? "bg-black" : "bg-gradient-to-br from-slate-50 via-white to-slate-100"}`}
+      style={{ height: `${(projects.length + 0.5) * 100}vh` }}
     >
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -124,8 +132,9 @@ export default function Projects({ darkMode }) {
               <button
                 key={idx}
                 onClick={() => {
-                  const targetScroll = (idx / (projectCount - 1)) * containerRef.current.scrollHeight;
-                  containerRef.current.scrollTo({ top: targetScroll, behavior: "smooth" });
+                  const scrollRange = containerRef.current.scrollHeight - window.innerHeight;
+                  const targetScroll = (idx / projectCount) * scrollRange;
+                  window.scrollTo({ top: containerRef.current.offsetTop + targetScroll, behavior: "smooth" });
                 }}
                 className={`transition-all duration-300 ${
                   activeIndex === idx 
@@ -328,8 +337,9 @@ export default function Projects({ darkMode }) {
                 <button
                   onClick={() => {
                     const prevIndex = (activeIndex - 1 + projectCount) % projectCount;
-                    const targetScroll = (prevIndex / (projectCount - 1)) * containerRef.current.scrollHeight;
-                    containerRef.current.scrollTo({ top: targetScroll, behavior: "smooth" });
+                    const scrollRange = containerRef.current.scrollHeight - window.innerHeight;
+                    const targetScroll = (prevIndex / projectCount) * scrollRange;
+                    window.scrollTo({ top: containerRef.current.offsetTop + targetScroll, behavior: "smooth" });
                   }}
                   className="pointer-events-auto w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 -ml-6"
                 >
@@ -338,8 +348,9 @@ export default function Projects({ darkMode }) {
                 <button
                   onClick={() => {
                     const nextIndex = (activeIndex + 1) % projectCount;
-                    const targetScroll = (nextIndex / (projectCount - 1)) * containerRef.current.scrollHeight;
-                    containerRef.current.scrollTo({ top: targetScroll, behavior: "smooth" });
+                    const scrollRange = containerRef.current.scrollHeight - window.innerHeight;
+                    const targetScroll = (nextIndex / projectCount) * scrollRange;
+                    window.scrollTo({ top: containerRef.current.offsetTop + targetScroll, behavior: "smooth" });
                   }}
                   className="pointer-events-auto w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 -mr-6"
                 >
@@ -354,8 +365,9 @@ export default function Projects({ darkMode }) {
                 <button
                   key={idx}
                   onClick={() => {
-                    const targetScroll = (idx / (projectCount - 1)) * containerRef.current.scrollHeight;
-                    containerRef.current.scrollTo({ top: targetScroll, behavior: "smooth" });
+                    const scrollRange = containerRef.current.scrollHeight - window.innerHeight;
+                    const targetScroll = (idx / projectCount) * scrollRange;
+                    window.scrollTo({ top: containerRef.current.offsetTop + targetScroll, behavior: "smooth" });
                   }}
                   onMouseEnter={() => setHoveredProject(idx)}
                   onMouseLeave={() => setHoveredProject(null)}
