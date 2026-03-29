@@ -8,7 +8,7 @@ import profilePhoto from "../../assets/Gemini_Generated_Image_ufqljnufqljnufql (
 
 const YOUR_NAME_LINE1 = "Simerjeet";
 const YOUR_NAME_LINE2 = "Singh";
-const GITHUB_URL = "https://github.com/prince545";
+const GITHUB_URL = "https://github.com/SimerjeetSingh304";
 const CV_URL = "/your-cv.pdf";
 
 const ROLES = [
