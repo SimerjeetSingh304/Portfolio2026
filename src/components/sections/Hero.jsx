@@ -9,7 +9,7 @@ import profilePhoto from "../../assets/Gemini_Generated_Image_ufqljnufqljnufql (
 const YOUR_NAME_LINE1 = "Simerjeet";
 const YOUR_NAME_LINE2 = "Singh";
 const GITHUB_URL = "https://github.com/SimerjeetSingh304";
-const CV_URL = "/your-cv.pdf";
+const CV_URL = "/Simerjeet_Singh_Resume_6th_Sem.pdf";
 
 const ROLES = [
   "Full-Stack Developer", 1500,
