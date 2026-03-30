@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { FiSend, FiGithub, FiLinkedin, FiTwitter, FiMail, FiArrowRight } from "react-icons/fi";
 
 const SOCIALS = [
-  { icon: <FiGithub size={18} />,   label: "GitHub",   href: "https://github.com/yourusername",         color: "#f1f5f9" },
-  { icon: <FiLinkedin size={18} />, label: "LinkedIn",  href: "https://linkedin.com/in/yourusername",    color: "#0A66C2" },
-  { icon: <FiTwitter size={18} />,  label: "Twitter",   href: "https://twitter.com/yourusername",        color: "#1DA1F2" },
-  { icon: <FiMail size={18} />,     label: "Email",     href: "mailto:your@email.com",                   color: "#3b82f6" },
+  { icon: <FiGithub size={18} />,   label: "GitHub",   href: "https://github.com/SimerjeetSingh304",         color: "#f1f5f9", username: "SimerjeetSingh304" },
+  { icon: <FiLinkedin size={18} />, label: "LinkedIn",  href: "https://www.linkedin.com/in/simerjeet-singh-8b1700295/",    color: "#0A66C2", username: "simerjeet-singh-8b1700295" },
+  { icon: <FiTwitter size={18} />,  label: "Twitter",   href: "https://twitter.com/yourusername",        color: "#1DA1F2", username: "yourusername" },
+  { icon: <FiMail size={18} />,     label: "Email",     href: "mailto:your@email.com",                   color: "#3b82f6", username: "your@email.com" },
 ];
 
 const fadeUp = (delay = 0) => ({
@@ -171,7 +171,7 @@ export default function Contact({ darkMode }) {
                   </span>
                   <div>
                     <div style={{ fontSize: "0.85rem", fontWeight: 700, color: t1 }}>{s.label}</div>
-                    <div style={{ fontSize: "0.72rem", color: t2 }}>yourusername</div>
+                    <div style={{ fontSize: "0.72rem", color: t2 }}>{s.username}</div>
                   </div>
                   <FiArrowRight
                     size={14}

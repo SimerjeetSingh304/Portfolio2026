@@ -25,7 +25,7 @@ const fadeUp = (delay = 0) => ({
 
 export default function About({ darkMode }) {
   const isDark = !!darkMode;
-  const githubUsername = "prince545";
+  const githubUsername = "SimerjeetSingh304";
 
   const t1     = isDark ? "#f1f5f9" : "#0f172a";
   const t2     = isDark ? "#64748b" : "#64748b";

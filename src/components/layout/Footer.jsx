@@ -1,8 +1,8 @@
 import { FiGithub, FiLinkedin, FiTwitter, FiMail } from "react-icons/fi";
 
 const socialLinks = [
-  { icon: FiGithub, href: "https://github.com", label: "GitHub" },
-  { icon: FiLinkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  { icon: FiGithub, href: "https://github.com/SimerjeetSingh304", label: "GitHub" },
+  { icon: FiLinkedin, href: "https://www.linkedin.com/in/simerjeet-singh-8b1700295/", label: "LinkedIn" },
   { icon: FiTwitter, href: "https://twitter.com", label: "Twitter" },
 ];
 

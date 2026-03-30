@@ -16,8 +16,8 @@
 // ];
 
 // const externalLinks = [
-//   { label: "GitHub",   href: "https://github.com/prince545",   icon: FiGithub },
-//   { label: "LinkedIn", href: "https://linkedin.com", icon: FiLinkedin },
+//   { label: "GitHub",   href: "https://github.com/SimerjeetSingh304",   icon: FiGithub },
+//   { label: "LinkedIn", href: "https://www.linkedin.com/in/simerjeet-singh-8b1700295/", icon: FiLinkedin },
 // ];
 
 // /* ── Magnifying Dock Item ───────────────────────────────────────────────── */
@@ -272,8 +272,8 @@ const dockLinks = [
 ];
 
 const externalLinks = [
-  { label: "GitHub",   href: "https://github.com/prince545",   icon: FiGithub },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: FiLinkedin },
+  { label: "GitHub",   href: "https://github.com/SimerjeetSingh304",   icon: FiGithub },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/simerjeet-singh-8b1700295/", icon: FiLinkedin },
 ];
 
 /* ── Magnifying Dock Item ───────────────────────────────────────────────── */

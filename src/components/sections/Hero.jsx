@@ -18,11 +18,6 @@ const ROLES = [
   "Problem Solver", 1500,
 ];
 
-const STATS = [
-  { value: "15K+", label: "Community" },
-  { value: "50+",  label: "Events led" },
-  { value: "3+",   label: "Years coding" },
-];
 
 const CARDS = [
   {
@@ -274,30 +269,6 @@ export default function Hero({ darkMode }) {
             >
               <FiGithub size={15}/> GitHub
             </a>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div {...fadeOnly(0.85)} style={{
-            display:"flex",alignItems:"center",gap:"2.25rem",
-            paddingTop:"2.25rem",borderTop:`1px solid ${border}`,
-          }}>
-            {STATS.map((s,i)=>(
-              <div key={i}>
-                <div style={{
-                  fontSize:"1.6rem",fontWeight:900,letterSpacing:"-0.03em",lineHeight:1,
-                  background:"linear-gradient(130deg,#3b82f6,#818cf8)",
-                  WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
-                }}>
-                  {s.value}
-                </div>
-                <div style={{
-                  fontSize:"0.68rem",fontWeight:600,letterSpacing:"0.09em",
-                  textTransform:"uppercase",color:text2,marginTop:"0.25rem",
-                }}>
-                  {s.label}
-                </div>
-              </div>
-            ))}
           </motion.div>
         </div>
 
