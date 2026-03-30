@@ -3,7 +3,7 @@ import { FiGithub, FiLinkedin, FiTwitter, FiMail } from "react-icons/fi";
 const socialLinks = [
   { icon: FiGithub, href: "https://github.com/SimerjeetSingh304", label: "GitHub" },
   { icon: FiLinkedin, href: "https://www.linkedin.com/in/simerjeet-singh-8b1700295/", label: "LinkedIn" },
-  { icon: FiTwitter, href: "https://twitter.com", label: "Twitter" },
+  { icon: FiTwitter, href: "https://x.com/SinghS71811", label: "Twitter" },
 ];
 
 export default function Footer({ darkMode }) {
@@ -33,10 +33,10 @@ export default function Footer({ darkMode }) {
           {/* Contact Actions */}
           <div className="flex items-center gap-6">
             <a 
-              href="mailto:contact@example.com" 
+              href="mailto:simerjeetsingh20232027@gmail.com" 
               className={`text-sm font-medium transition-colors hover:text-blue-500`}
             >
-              contact@example.com
+              simerjeetsingh20232027@gmail.com
             </a>
           </div>
 

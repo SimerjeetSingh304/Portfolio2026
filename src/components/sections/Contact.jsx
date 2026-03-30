@@ -5,8 +5,8 @@ import { FiSend, FiGithub, FiLinkedin, FiTwitter, FiMail, FiArrowRight } from "r
 const SOCIALS = [
   { icon: <FiGithub size={18} />,   label: "GitHub",   href: "https://github.com/SimerjeetSingh304",         color: "#f1f5f9", username: "SimerjeetSingh304" },
   { icon: <FiLinkedin size={18} />, label: "LinkedIn",  href: "https://www.linkedin.com/in/simerjeet-singh-8b1700295/",    color: "#0A66C2", username: "simerjeet-singh-8b1700295" },
-  { icon: <FiTwitter size={18} />,  label: "Twitter",   href: "https://twitter.com/yourusername",        color: "#1DA1F2", username: "yourusername" },
-  { icon: <FiMail size={18} />,     label: "Email",     href: "mailto:your@email.com",                   color: "#3b82f6", username: "your@email.com" },
+  { icon: <FiTwitter size={18} />,  label: "Twitter",   href: "https://x.com/SinghS71811",              color: "#1DA1F2", username: "SinghS71811" },
+  { icon: <FiMail size={18} />,     label: "Email",     href: "mailto:simerjeetsingh20232027@gmail.com",                  color: "#3b82f6", username: "simerjeetsingh20232027" },
 ];
 
 const fadeUp = (delay = 0) => ({
