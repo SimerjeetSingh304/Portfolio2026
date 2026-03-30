@@ -487,7 +487,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                 <span className={`text-sm font-bold tracking-tight transition-colors duration-300 ${
                   darkMode ? "text-white group-hover:text-blue-400" : "text-slate-900 group-hover:text-blue-600"
                 }`}>
-                  Portfolio.
+                  Simerjeet.
                 </span>
               </RouterLink>
             </div>
