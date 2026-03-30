@@ -240,9 +240,7 @@ export default function Hero({ darkMode }) {
             fontSize:"1rem",lineHeight:1.8,fontWeight:300,
             color:text2,maxWidth:460,marginBottom:"2.75rem",
           }}>
-            CS student at MSIT · Founder of{" "}
-            <span style={{color:textMid,fontWeight:600}}>Geek Room</span>
-            {" "}· GDG Lead. I craft full-stack applications and AI systems — and love the craft of building things that matter.
+            I craft full-stack applications and AI systems — and love the craft of building things that matter.
           </motion.p>
 
           {/* CTAs */}
